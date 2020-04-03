@@ -6,8 +6,10 @@ import java.io.IOException;
 public class dbload {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		int pagesize = 0 ;
+		// Records will be fixed in size, with size of 372 bytes.
+		final int recordSize = 372;
+		final int recordBytes = 4;
+		int pageSize = 0 ;
 		String filePath = "";
 		String currentRow = "";
 		BufferedReader csvReader;
@@ -15,7 +17,7 @@ public class dbload {
 		if(args.length == 3) {
 			if(args[0].equals("-p")) {
 			    try {
-			        pagesize = Integer.parseInt(args[1]);
+			        pageSize = Integer.parseInt(args[1]);
 			        filePath = args[3];
 			        
 			        // Open the file(csv)
@@ -30,19 +32,25 @@ public class dbload {
 			    catch (FileNotFoundException e) {
 			    	throw new FileNotFoundException("Third Arguement must be a file");
 			    }
-
-			      
-			    //Process the datafile
-
 			    
-			    // Consume the header
-			    String headerLine = csvReader.readLine();
-			    while ((row = csvReader.readLine()) != null) {
-			        String[] data = row.split(",");
-			        // do something with the data
+			    /* 
+			     * Cannot store any records if the given page size cannot 
+			     * store a record and the number of pages	
+			    */
+			    if(pageSize < recordSize + recordBytes) {
+				    //All checks are done
+
+				    
+				    // Consume the header
+				    String headerLine = csvReader.readLine();
+				    while ((row = csvReader.readLine()) != null) {
+				        String[] data = row.split(",");
+				        // do something with the data
+				    }
+				    csvReader.close();
+			    } else {
+			    	System.out.println("The pagesize you entered is too small, must be atleast 376.");
 			    }
-			    csvReader.close();
-			    
 			} else {
 				System.out.println(args[0]);
 				System.out.println("First Argument should be '-p' ");
